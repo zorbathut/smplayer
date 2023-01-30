@@ -270,7 +270,6 @@ Core::Core( MplayerWindow *mpw, QWidget* parent )
 
 #ifdef USE_POWERSAVING
 	screensaver = new ScreenSaver(this);
-	connect( this, SIGNAL(aboutToStartPlaying()), this, SLOT(disableScreensaver()) );
 	connect( proc, SIGNAL(processExited()), this, SLOT(enableScreensaver()) );
 	connect( proc, SIGNAL(error(QProcess::ProcessError)), this, SLOT(enableScreensaver()) );
 #endif
@@ -4797,16 +4796,13 @@ void Core::sendMediaInfo() {
 //!  Called when the state changes
 void Core::watchState(Core::State state) {
 #ifdef USE_POWERSAVING
-	#if 1
 	qDebug("Core::watchState: %d", state);
-	//qDebug("Core::watchState: has video: %d", !mdat.novideo);
 
-	if ((state == Playing) /* && (!mdat.novideo) */) {
+	if (state == Playing) {
 		disableScreensaver();
 	} else {
 		enableScreensaver();
 	}
-	#endif
 #endif
 
 	if ((proc->isMPlayer()) && (state == Playing) && (change_volume_after_unpause)) {
